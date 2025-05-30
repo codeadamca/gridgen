@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GridGen</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        :root {
+            --bg: #181c20;
+            --sidebar-bg: #23272e;
+            --panel-bg: #23272e;
+            --text: #f3f3f3;
+            --border: #333a44;
+            --accent: #3fa9f5;
+            --cell-border: #444b55;
+            --cell-selected: #fff;
+            --btn-bg: #23272e;
+            --btn-hover: #31363f;
+        }
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: sans-serif;
+        }
+        .sidebar {
+            background: var(--sidebar-bg);
+            height: 100vh;
+            min-width: 260px;
+            width: 320px;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0;
+        }
+        .sidebar > * {
+            margin-left: 28px;
+            margin-right: 28px;
+        }
+        .controls {
+            margin-bottom: 16px;
+        }
+        label {
+            color: var(--text);
+            margin-right: 6px;
+        }
+        input[type="number"] {
+            background: var(--panel-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 4px 8px;
+            margin-right: 12px;
+            margin-left: 2px;
+        }
+        #pickerGrid {
+            display: grid;
+            grid-template-columns: repeat(4, 32px);
+            grid-gap: 6px;
+            margin-bottom: 18px;
+            justify-items: center;
+            align-items: center;
+        }
+        .picker-cell {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--cell-border);
+            cursor: pointer;
+            box-sizing: border-box;
+            border-radius: 6px;
+            transition: border 0.15s;
+        }
+        .picker-cell.selected {
+            border: 2px solid var(--cell-selected);
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+        #exportBtn, #copyBtn {
+            background: var(--btn-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 16px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: background 0.15s, border 0.15s;
+        }
+        #exportBtn:hover, #copyBtn:hover {
+            background: var(--btn-hover);
+            border-color: var(--accent);
+        }
+        #markdownOutput {
+            width: 220px;
+            max-width: 90vw;
+            margin-top: 12px;
+            margin-bottom: 12px;
+            font-family: monospace;
+            white-space: pre;
+            background: #23272e;
+            color: #e6e6e6;
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 6px;
+            min-height: 80px;
+            max-height: 120px;
+            height: 120px;
+            overflow: auto;
+            box-sizing: border-box;
+            resize: none;
+        }
+        .main-grid-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--bg);
+        }
+        #colorGrid > div {
+            border-radius: 7px;
+            border: 2px solid var(--cell-border);
+            box-sizing: border-box;
+            transition: border 0.15s;
+        }
+        #colorGrid > div:hover {
+            border: 2px solid var(--accent);
+        }
+    </style>
+</head>
+<body class="w3-row">
+    <div class="sidebar w3-col l3 m4 s12">
+        <div class="controls w3-margin-bottom">
+            <div style="margin-bottom: 14px; display: flex; align-items: center;">
+                <label for="gridWidth">Width:</label>
+                <input type="number" id="gridWidth" min="1" max="20" value="4" style="width: 60px;">
+                <button type="button" id="widthUp" aria-label="Increase width" class="w3-button w3-round-small" style="margin-left:4px;width:28px;height:28px;padding:0;">▲</button>
+                <button type="button" id="widthDown" aria-label="Decrease width" class="w3-button w3-round-small" style="margin-left:2px;width:28px;height:28px;padding:0;">▼</button>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <label for="gridHeight">Height:</label>
+                <input type="number" id="gridHeight" min="1" max="20" value="4" style="width: 60px;">
+                <button type="button" id="heightUp" aria-label="Increase height" class="w3-button w3-round-small" style="margin-left:4px;width:28px;height:28px;padding:0;">▲</button>
+                <button type="button" id="heightDown" aria-label="Decrease height" class="w3-button w3-round-small" style="margin-left:2px;width:28px;height:28px;padding:0;">▼</button>
+            </div>
+        </div>
+        <div id="pickerGrid"></div>
+        <button id="exportBtn" class="w3-button">Export to Markdown Table</button>
+        <div id="markdownOutput"></div>
+        <button id="copyBtn" class="w3-button">Copy Markdown</button>
+    </div>
+    <div class="main-grid-container w3-col l9 m8 s12">
+        <div id="colorGrid"></div>
+    </div>
+    <script>
+        // 16 colors: 2 greys, black, white, and 12 vibrant colors
+        const colors = [
+            "#888888", // grey
+            "#cccccc", // light grey
+            "#000000", // black
+            "#ffffff", // white
+            "#FF5733", "#33FF57", "#3357FF", "#F1C40F",
+            "#9B59B6", "#1ABC9C", "#E67E22", "#E74C3C",
+            "#2ECC71", "#3498DB", "#8E44AD", "#F39C12"
+        ];
+        const defaultGridColor = "#888888"; // grey
+
+        const colorGrid = document.getElementById('colorGrid');
+        const gridWidthInput = document.getElementById('gridWidth');
+        const gridHeightInput = document.getElementById('gridHeight');
+        const pickerGrid = document.getElementById('pickerGrid');
+        const exportBtn = document.getElementById('exportBtn');
+        const markdownOutput = document.getElementById('markdownOutput');
+
+        let selectedColor = colors[0];
+        let gridState = [];
+
+        // Render the color picker grid
+        function renderPickerGrid() {
+            pickerGrid.innerHTML = '';
+            colors.forEach((color) => {
+                const cell = document.createElement('div');
+                cell.className = 'picker-cell' + (selectedColor === color ? ' selected' : '');
+                cell.style.background = color;
+                cell.title = color;
+                cell.addEventListener('click', () => {
+                    selectedColor = color;
+                    renderPickerGrid();
+                });
+                pickerGrid.appendChild(cell);
+            });
+        }
+
+        // Render the main grid and keep track of state
+        function renderGrid() {
+            const width = parseInt(gridWidthInput.value, 10);
+            const height = parseInt(gridHeightInput.value, 10);
+            colorGrid.style.display = "grid";
+            colorGrid.style.gridTemplateColumns = `repeat(${width}, 40px)`;
+            colorGrid.style.gridGap = "8px";
+            colorGrid.innerHTML = "";
+            // If gridState is not the right size, reset it
+            if (!gridState.length || gridState.length !== width * height) {
+                gridState = [];
+                for (let i = 0; i < width * height; i++) {
+                    gridState.push(defaultGridColor);
+                }
+            }
+            for (let i = 0; i < width * height; i++) {
+                const div = document.createElement('div');
+                div.style.width = "40px";
+                div.style.height = "40px";
+                div.style.background = gridState[i];
+                div.style.cursor = "pointer";
+                // Allow user to set color by clicking
+                div.addEventListener('click', function() {
+                    gridState[i] = selectedColor;
+                    div.style.background = selectedColor;
+                });
+                colorGrid.appendChild(div);
+            }
+        }
+
+        // When grid size changes, reset gridState and re-render
+        function resetGridState() {
+            gridState = [];
+            renderGrid();
+        }
+
+        gridWidthInput.addEventListener('input', resetGridState);
+        gridHeightInput.addEventListener('input', resetGridState);
+
+        // Export to Markdown Table
+        exportBtn.addEventListener('click', function() {
+            const width = parseInt(gridWidthInput.value, 10);
+            const height = parseInt(gridHeightInput.value, 10);
+            let md = '| X | Y | RGB Colour |\n|---|---|------------|\n';
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const idx = y * width + x;
+                    md += `| ${x} | ${y} | ${gridState[idx]} |\n`;
+                }
+            }
+            markdownOutput.textContent = md;
+        });
+
+        // Copy Markdown to clipboard
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            const text = markdownOutput.textContent;
+            if (text) {
+                navigator.clipboard.writeText(text);
+            }
+        });
+
+        // Arrow button handlers for width
+        document.getElementById('widthUp').onclick = function() {
+            let input = document.getElementById('gridWidth');
+            if (parseInt(input.value) < parseInt(input.max)) {
+                input.value = parseInt(input.value) + 1;
+                input.dispatchEvent(new Event('input'));
+            }
+        };
+        document.getElementById('widthDown').onclick = function() {
+            let input = document.getElementById('gridWidth');
+            if (parseInt(input.value) > parseInt(input.min)) {
+                input.value = parseInt(input.value) - 1;
+                input.dispatchEvent(new Event('input'));
+            }
+        };
+
+        // Arrow button handlers for height
+        document.getElementById('heightUp').onclick = function() {
+            let input = document.getElementById('gridHeight');
+            if (parseInt(input.value) < parseInt(input.max)) {
+                input.value = parseInt(input.value) + 1;
+                input.dispatchEvent(new Event('input'));
+            }
+        };
+        document.getElementById('heightDown').onclick = function() {
+            let input = document.getElementById('gridHeight');
+            if (parseInt(input.value) > parseInt(input.min)) {
+                input.value = parseInt(input.value) - 1;
+                input.dispatchEvent(new Event('input'));
+            }
+        };
+
+        // Initial render
+        renderPickerGrid();
+        renderGrid();
+    </script>
+</body>
+</html>
