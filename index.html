@@ -6,131 +6,165 @@
     <title>GridGen</title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <style>
-        :root {
-            --bg: #181c20;
-            --sidebar-bg: #23272e;
-            --panel-bg: #23272e;
-            --text: #f3f3f3;
-            --border: #333a44;
-            --accent: #3fa9f5;
-            --cell-border: #444b55;
-            --cell-selected: #fff;
-            --btn-bg: #23272e;
-            --btn-hover: #31363f;
-        }
-        body, html {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            background: var(--bg);
-            color: var(--text);
-            font-family: sans-serif;
-        }
-        .sidebar {
-            background: var(--sidebar-bg);
-            height: 100vh;
-            min-width: 260px;
-            width: 320px;
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 0;
-        }
-        .sidebar > * {
-            margin-left: 28px;
-            margin-right: 28px;
-        }
-        .controls {
-            margin-bottom: 16px;
-        }
-        label {
-            color: var(--text);
-            margin-right: 6px;
-        }
-        input[type="number"] {
-            background: var(--panel-bg);
-            color: var(--text);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 4px 8px;
-            margin-right: 12px;
-            margin-left: 2px;
-        }
-        #pickerGrid {
-            display: grid;
-            grid-template-columns: repeat(4, 32px);
-            grid-gap: 6px;
-            margin-bottom: 18px;
-            justify-items: center;
-            align-items: center;
-        }
-        .picker-cell {
-            width: 32px;
-            height: 32px;
-            border: 2px solid var(--cell-border);
-            cursor: pointer;
-            box-sizing: border-box;
-            border-radius: 6px;
-            transition: border 0.15s;
-        }
-        .picker-cell.selected {
-            border: 2px solid var(--cell-selected);
-            box-shadow: 0 0 0 2px var(--accent);
-        }
-        #exportBtn, #copyBtn {
-            background: var(--btn-bg);
-            color: var(--text);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 8px 16px;
-            cursor: pointer;
-            margin-bottom: 10px;
-            transition: background 0.15s, border 0.15s;
-        }
-        #exportBtn:hover, #copyBtn:hover {
-            background: var(--btn-hover);
-            border-color: var(--accent);
-        }
-        #markdownOutput {
-            width: 220px;
-            max-width: 90vw;
-            margin-top: 12px;
-            margin-bottom: 12px;
-            font-family: monospace;
-            white-space: pre;
-            background: #23272e;
-            color: #e6e6e6;
-            border: 1px solid var(--border);
-            padding: 12px;
-            border-radius: 6px;
-            min-height: 80px;
-            max-height: 120px;
-            height: 120px;
-            overflow: auto;
-            box-sizing: border-box;
-            resize: none;
-        }
-        .main-grid-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: var(--bg);
-        }
-        #colorGrid > div {
-            border-radius: 7px;
-            border: 2px solid var(--cell-border);
-            box-sizing: border-box;
-            transition: border 0.15s;
-        }
-        #colorGrid > div:hover {
-            border: 2px solid var(--accent);
-        }
+            :root {
+                --bg: #181c20;
+                --sidebar-bg: #23272e;
+                --panel-bg: #23272e;
+                --text: #f3f3f3;
+                --border: #333a44;
+                --accent: #3fa9f5;
+                --cell-border: #444b55;
+                --cell-selected: #fff;
+                --btn-bg: #23272e;
+                --btn-hover: #31363f;
+            }
+            body, html {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                background: var(--bg);
+                color: var(--text);
+                font-family: sans-serif;
+            }
+            .sidebar {
+                background: var(--sidebar-bg);
+                height: 100vh;
+                min-width: 260px;
+                width: 320px;
+                border-right: 1px solid var(--border);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 0;
+            }
+            .sidebar > * {
+                margin-left: 28px;
+                margin-right: 28px;
+            }
+            .controls {
+                margin-bottom: 16px;
+            }
+            label {
+                color: var(--text);
+                margin-right: 6px;
+            }
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            input[type=number] {
+                -moz-appearance: textfield; 
+                background: var(--panel-bg);
+                color: var(--text);
+                border: 1px solid var(--border);
+                border-radius: 4px;
+                padding: 4px 8px;
+                margin-right: 12px;
+                margin-left: 2px;
+            }
+            #pickerGrid {
+                display: grid;
+                grid-template-columns: repeat(4, 32px);
+                grid-gap: 6px;
+                margin-bottom: 12px;
+                justify-items: center;
+                align-items: center;
+            }
+            .picker-cell {
+                width: 32px;
+                height: 32px;
+                border: 2px solid var(--cell-border);
+                cursor: pointer;
+                box-sizing: border-box;
+                border-radius: 6px;
+                transition: border 0.15s;
+            }
+            .picker-cell.selected {
+                border: 2px solid var(--cell-selected);
+                box-shadow: 0 0 0 2px var(--accent);
+            }
+            #exportBtn, #copyBtn {
+                background: var(--btn-bg);
+                color: var(--text);
+                border: 1px solid var(--border);
+                border-radius: 6px;
+                padding: 8px 16px;
+                cursor: pointer;
+                margin-top: 12px;
+                margin-bottom: 12px;
+                transition: background 0.15s, border 0.15s;
+            }
+            #exportBtn:hover, #copyBtn:hover {
+                background: var(--btn-hover);
+                border-color: var(--accent);
+            }
+            #markdownOutput {
+                max-width: 90vw;
+                margin-top: 12px;
+                margin-bottom: 12px;
+                font-family: monospace;
+                white-space: pre;
+                background: #23272e;
+                color: #e6e6e6;
+                border: 1px solid var(--border);
+                padding: 12px;
+                border-radius: 6px;
+                min-height: 80px;
+                max-height: 120px;
+                height: 120px;
+                overflow: auto;
+                box-sizing: border-box;
+                resize: none;
+            }
+            .main-grid-container {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                background: var(--bg);
+            }
+            #colorGrid > div {
+                border-radius: 7px;
+                border: 2px solid var(--cell-border);
+                box-sizing: border-box;
+                transition: border 0.15s;
+            }
+            #colorGrid > div:hover {
+                border: 2px solid var(--accent);
+            }
+
+            #codeadam {
+                position: fixed;
+                bottom: 0;
+                right: 0;
+                font-size: 24px;
+                padding: 15px;
+                z-index: 10000;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            #codeadam img {
+                vertical-align: middle;
+            }
     </style>
+
+  <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet">
+
+  <script src="https://kit.fontawesome.com/57a8a8c892.js" crossorigin="anonymous"></script>
+
 </head>
 <body class="w3-row">
+
+    <div id="codeadam">
+        <a href="/"><i class="fas fa-bars"></i></a>
+        &nbsp;
+        <a href="https://github.com/codeadamca/gridgen"><i class="fab fa-github"></i></a>
+        &nbsp;
+        <a href="https://codeadam.ca"><img src="https://codeadam.ca/images/code-block-white.png" width="30"></a>
+    </div>
+
     <div class="sidebar w3-col l3 m4 s12">
         <div class="controls w3-margin-bottom">
             <div style="margin-bottom: 14px; display: flex; align-items: center;">
@@ -155,15 +189,24 @@
         <div id="colorGrid"></div>
     </div>
     <script>
-        // 16 colors: 2 greys, black, white, and 12 vibrant colors
+        // 16 colors: 2 greys, black, white, and 12 distinct vibrant colors (one for each hue)
         const colors = [
             "#888888", // grey
             "#cccccc", // light grey
             "#000000", // black
             "#ffffff", // white
-            "#FF5733", "#33FF57", "#3357FF", "#F1C40F",
-            "#9B59B6", "#1ABC9C", "#E67E22", "#E74C3C",
-            "#2ECC71", "#3498DB", "#8E44AD", "#F39C12"
+            "#FF0000", // red
+            "#FF7F00", // orange
+            "#FFFF00", // yellow
+            "#00FF00", // green
+            "#00FFFF", // cyan
+            "#0000FF", // blue
+            "#8B00FF", // violet
+            "#FF1493", // pink
+            "#964B00", // brown
+            "#FFD700", // gold
+            "#00FF7F", // spring green
+            "#1E90FF"  // dodger blue
         ];
         const defaultGridColor = "#888888"; // grey
 
@@ -204,8 +247,15 @@
             // If gridState is not the right size, reset it
             if (!gridState.length || gridState.length !== width * height) {
                 gridState = [];
-                for (let i = 0; i < width * height; i++) {
-                    gridState.push(defaultGridColor);
+                for (let y = 0; y < height; y++) {
+                    for (let x = 0; x < width; x++) {
+                        // Left half FF0000 (red), right half FF7F00 (orange)
+                        if (x < width / 2) {
+                            gridState.push("#FF0000");
+                        } else {
+                            gridState.push("#FF7F00");
+                        }
+                    }
                 }
             }
             for (let i = 0; i < width * height; i++) {
