@@ -12,7 +12,7 @@ A basic web page uased to generate Markdown tables of a grid of colours. This is
 ## Repo Resources
 
 * [GridGen](https://pages.codeadam.ca/gridgen/)
-* [GitHub Copilot]([https://pages.codeadam.ca/gridgen/](https://github.com/features/copilot))
+* [GitHub Copilot](https://pages.codeadam.ca/gridgen/)
 
 <br>
 <a href="https://codeadam.ca">
